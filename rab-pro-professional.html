@@ -1,0 +1,2142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAB Pro Professional</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0c0f1a;
+    --bg2: #131726;
+    --bg3: #1a2035;
+    --card: #1e2640;
+    --card2: #242d4a;
+    --border: #2d3a5e;
+    --accent: #f0a500;
+    --accent2: #e07b00;
+    --blue: #3d7fff;
+    --blue2: #2563eb;
+    --green: #22c55e;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --text: #e8eaf0;
+    --text2: #8b95b0;
+    --text3: #5a6480;
+    --sidebar-w: 260px;
+    --header-h: 64px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-logo {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: #000;
+    flex-shrink: 0;
+  }
+
+  .logo-text h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .logo-text span {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 12px;
+  }
+
+  .nav-section {
+    margin-bottom: 20px;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 0 8px 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: var(--text2);
+    font-size: 13.5px;
+    font-weight: 400;
+    margin-bottom: 2px;
+    text-decoration: none;
+    position: relative;
+  }
+
+  .nav-item:hover {
+    background: var(--card);
+    color: var(--text);
+  }
+
+  .nav-item.active {
+    background: linear-gradient(135deg, rgba(240,165,0,0.15), rgba(240,165,0,0.05));
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 4px; bottom: 4px;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 0 3px 3px 0;
+  }
+
+  .nav-icon {
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+  }
+
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-avatar {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .user-info h4 { font-size: 13px; font-weight: 500; color: var(--text); }
+  .user-info span { font-size: 11px; color: var(--accent); }
+
+  /* HEADER */
+  .header {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-w);
+    right: 0;
+    height: var(--header-h);
+    background: rgba(12,15,26,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 50;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .breadcrumb {
+    font-size: 13px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .breadcrumb span { color: var(--text); font-weight: 500; }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-btn {
+    width: 36px; height: 36px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .header-btn:hover { background: var(--card2); border-color: var(--text3); }
+
+  .notif-dot {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 7px; height: 7px;
+    background: var(--red);
+    border-radius: 50%;
+    border: 1.5px solid var(--bg);
+  }
+
+  .project-select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 7px 12px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: var(--sidebar-w);
+    padding-top: var(--header-h);
+    min-height: 100vh;
+  }
+
+  .page { display: none; padding: 24px; }
+  .page.active { display: block; animation: fadeIn 0.25s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* PAGE HEADER */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .page-title h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .page-title p { font-size: 13px; color: var(--text2); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+
+  .btn-primary:hover { background: var(--accent2); }
+
+  .btn-secondary {
+    background: var(--card2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover { background: var(--card); border-color: var(--text3); }
+
+  .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* STAT CARDS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .stat-card:hover { border-color: var(--text3); }
+
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60px; height: 60px;
+    border-radius: 0 12px 0 60px;
+    opacity: 0.07;
+  }
+
+  .stat-card.gold::after { background: var(--accent); }
+  .stat-card.blue::after { background: var(--blue); }
+  .stat-card.green::after { background: var(--green); }
+  .stat-card.purple::after { background: var(--purple); }
+  .stat-card.red::after { background: var(--red); }
+
+  .stat-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    margin-bottom: 12px;
+  }
+
+  .stat-card.gold .stat-icon { background: rgba(240,165,0,0.15); }
+  .stat-card.blue .stat-icon { background: rgba(61,127,255,0.15); }
+  .stat-card.green .stat-icon { background: rgba(34,197,94,0.15); }
+  .stat-card.purple .stat-icon { background: rgba(139,92,246,0.15); }
+  .stat-card.red .stat-icon { background: rgba(239,68,68,0.15); }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .stat-card.gold .stat-value { color: var(--accent); }
+  .stat-card.blue .stat-value { color: var(--blue); }
+  .stat-card.green .stat-value { color: var(--green); }
+  .stat-card.purple .stat-value { color: var(--purple); }
+  .stat-card.red .stat-value { color: var(--red); }
+
+  .stat-label { font-size: 12px; color: var(--text2); font-weight: 400; }
+
+  .stat-change {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    margin-top: 8px;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+
+  .stat-change.up { background: rgba(34,197,94,0.1); color: var(--green); }
+  .stat-change.down { background: rgba(239,68,68,0.1); color: var(--red); }
+
+  /* CHARTS GRID */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .chart-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .chart-subtitle { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  .chart-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg3);
+    padding: 3px;
+    border-radius: 7px;
+  }
+
+  .chart-tab {
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text2);
+  }
+
+  .chart-tab.active { background: var(--card2); color: var(--text); }
+
+  /* TABLE */
+  .table-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px;
+    min-width: 200px;
+  }
+
+  .search-box input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .search-box input::placeholder { color: var(--text3); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead tr {
+    background: var(--bg3);
+  }
+
+  th {
+    padding: 11px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text3);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 12px 16px;
+    font-size: 13.5px;
+    color: var(--text2);
+    border-bottom: 1px solid rgba(45,58,94,0.5);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tbody tr { transition: background 0.1s; }
+  tbody tr:hover { background: var(--bg3); }
+
+  td strong { color: var(--text); font-weight: 500; }
+
+  /* BADGES */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .badge-gold { background: rgba(240,165,0,0.15); color: var(--accent); }
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-blue { background: rgba(61,127,255,0.15); color: var(--blue); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .badge-purple { background: rgba(139,92,246,0.15); color: var(--purple); }
+  .badge-gray { background: rgba(255,255,255,0.05); color: var(--text3); }
+
+  /* PROGRESS */
+  .progress-bar {
+    width: 100%;
+    height: 5px;
+    background: var(--bg3);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.5s ease;
+  }
+
+  .progress-fill.blue { background: linear-gradient(90deg, var(--blue), var(--blue2)); }
+  .progress-fill.green { background: linear-gradient(90deg, var(--green), #16a34a); }
+
+  /* FORM */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+    letter-spacing: 0.02em;
+  }
+
+  .form-input, .form-select {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  .form-input:focus, .form-select:focus {
+    border-color: var(--accent);
+  }
+
+  .form-input::placeholder { color: var(--text3); }
+
+  .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .form-section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* KURVA S */
+  .kurva-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .kurva-info-item {
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .kurva-info-item .val {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .kurva-info-item .lbl { font-size: 11px; color: var(--text2); }
+
+  /* ROLE CARDS */
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .role-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+
+  .role-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .role-perm {
+    font-size: 12px;
+    color: var(--text2);
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border-bottom: 1px solid rgba(45,58,94,0.4);
+  }
+
+  .role-perm:last-child { border-bottom: none; }
+  .role-perm::before { content: '✓'; color: var(--green); font-size: 11px; font-weight: 700; }
+
+  /* FIREBASE TREE */
+  .tree-container {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: 13px;
+  }
+
+  .tree-item {
+    padding: 3px 0;
+    color: var(--text2);
+  }
+
+  .tree-item.root { color: var(--blue); font-weight: 600; }
+  .tree-item.collection { color: var(--accent); }
+  .tree-item.sub { padding-left: 20px; }
+
+  /* ACTION BUTTON GROUPS */
+  .action-btns { display: flex; gap: 6px; }
+
+  .icon-btn {
+    width: 30px; height: 30px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg3);
+    color: var(--text2);
+    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .icon-btn:hover { background: var(--card2); color: var(--text); border-color: var(--text3); }
+  .icon-btn.edit:hover { color: var(--blue); border-color: var(--blue); }
+  .icon-btn.del:hover { color: var(--red); border-color: var(--red); }
+
+  /* DIVIDER */
+  .section-gap { margin-bottom: 16px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .charts-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    :root { --sidebar-w: 0px; }
+    .sidebar { transform: translateX(-260px); --sidebar-w: 260px; }
+    .sidebar.open { transform: none; }
+    .header { left: 0; }
+    .main { margin-left: 0; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px;
+    z-index: 999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .toast.show { transform: none; opacity: 1; }
+  .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+  /* MODAL OVERLAY */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    width: 500px;
+    max-width: 95vw;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-close {
+    width: 28px; height: 28px;
+    background: var(--card);
+    border: none; border-radius: 6px;
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ABSENSI */
+  .absensi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .pekerja-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .pekerja-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .pekerja-name { font-weight: 600; font-size: 13.5px; margin-bottom: 3px; }
+  .pekerja-role { font-size: 11px; color: var(--text2); margin-bottom: 10px; }
+
+  /* BOTTOM PADDING */
+  .page-bottom { height: 40px; }
+
+  /* LOADING SKELETON */
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, var(--card) 25%, var(--card2) 50%, var(--card) 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+    border-radius: 6px;
+  }
+
+  /* PAGE INDICATOR */
+  .active-indicator {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">R</div>
+    <div class="logo-text">
+      <h2>RAB Pro</h2>
+      <span>PROFESSIONAL v1.0</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-label">Utama</div>
+      <a class="nav-item active" onclick="navigate('dashboard', this)">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Data Master</div>
+      <a class="nav-item" onclick="navigate('ahsp', this)">
+        <span class="nav-icon">📋</span> AHSP
+      </a>
+      <a class="nav-item" onclick="navigate('hsp', this)">
+        <span class="nav-icon">💰</span> HSP
+      </a>
+      <a class="nav-item" onclick="navigate('bahan', this)">
+        <span class="nav-icon">🧱</span> Bahan
+      </a>
+      <a class="nav-item" onclick="navigate('upah', this)">
+        <span class="nav-icon">👷</span> Upah
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Perhitungan</div>
+      <a class="nav-item" onclick="navigate('volume', this)">
+        <span class="nav-icon">📐</span> Hitung Volume
+      </a>
+      <a class="nav-item" onclick="navigate('rab', this)">
+        <span class="nav-icon">🧮</span> Hitung RAB
+        <span class="nav-badge">3</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Rekapitulasi</div>
+      <a class="nav-item" onclick="navigate('rekap', this)">
+        <span class="nav-icon">📑</span> Rekap RAB
+      </a>
+      <a class="nav-item" onclick="navigate('bobot', this)">
+        <span class="nav-icon">⚖️</span> Bobot Pekerjaan
+      </a>
+      <a class="nav-item" onclick="navigate('kurvas', this)">
+        <span class="nav-icon">📈</span> Kurva S
+      </a>
+      <a class="nav-item" onclick="navigate('smkk', this)">
+        <span class="nav-icon">🦺</span> RAB SMKK
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Dokumen</div>
+      <a class="nav-item" onclick="navigate('penawaran', this)">
+        <span class="nav-icon">📄</span> Penawaran
+      </a>
+      <a class="nav-item" onclick="navigate('cco', this)">
+        <span class="nav-icon">🔄</span> CCO
+      </a>
+      <a class="nav-item" onclick="navigate('absensi', this)">
+        <span class="nav-icon">🗓️</span> Absensi Pekerja
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Sistem</div>
+      <a class="nav-item" onclick="navigate('user-role', this)">
+        <span class="nav-icon">🔐</span> User & Role
+      </a>
+      <a class="nav-item" onclick="navigate('firebase', this)">
+        <span class="nav-icon">🔥</span> Firebase Structure
+      </a>
+      <a class="nav-item" onclick="navigate('panduan', this)">
+        <span class="nav-icon">📖</span> Panduan
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-avatar">AD</div>
+    <div class="user-info">
+      <h4>Admin Utama</h4>
+      <span>Administrator</span>
+    </div>
+  </div>
+</aside>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <span class="breadcrumb">RAB Pro › <span id="breadcrumb-title">Dashboard</span></span>
+  </div>
+  <div class="header-right">
+    <select class="project-select" onchange="showToast('Proyek diubah: ' + this.value)">
+      <option>🏗️ Proyek Gedung A</option>
+      <option>🏘️ Perumahan Blok B</option>
+      <option>🌉 Jembatan Ciawi</option>
+    </select>
+    <div class="header-btn" onclick="showToast('Notifikasi dibuka')">
+      🔔
+      <div class="notif-dot"></div>
+    </div>
+    <div class="header-btn" onclick="showToast('Pengaturan dibuka')">⚙️</div>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- ═══════════ DASHBOARD ═══════════ -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Dashboard <span class="active-indicator"></span></h1>
+        <p>Ringkasan data proyek konstruksi realtime</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showToast('Export berhasil')">📥 Export</button>
+        <button class="btn btn-primary" onclick="openModal()">+ Proyek Baru</button>
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card gold">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">4.7M</div>
+        <div class="stat-label">Total Nilai Proyek</div>
+        <div class="stat-change up">▲ 12.4% bulan ini</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value">284</div>
+        <div class="stat-label">Total Item Pekerjaan</div>
+        <div class="stat-change up">▲ 8 item baru</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">📐</div>
+        <div class="stat-value">18.4K</div>
+        <div class="stat-label">Total Volume (m³)</div>
+        <div class="stat-change up">▲ 3.2%</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon">🧮</div>
+        <div class="stat-value">3.9M</div>
+        <div class="stat-label">Total RAB</div>
+        <div class="stat-change up">▲ 5.1%</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-icon">🦺</div>
+        <div class="stat-value">186K</div>
+        <div class="stat-label">Total SMKK</div>
+        <div class="stat-change down">▼ 1.2%</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">⚖️</div>
+        <div class="stat-value">67%</div>
+        <div class="stat-label">Progress Bobot</div>
+        <div style="margin-top:10px;"><div class="progress-bar"><div class="progress-fill blue" style="width:67%"></div></div></div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">📈</div>
+        <div class="stat-value">71%</div>
+        <div class="stat-label">Progress Kurva S</div>
+        <div style="margin-top:10px;"><div class="progress-bar"><div class="progress-fill green" style="width:71%"></div></div></div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-icon">👷</div>
+        <div class="stat-value">42</div>
+        <div class="stat-label">Total Pekerja</div>
+        <div class="stat-change up">▲ 5 orang</div>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Grafik Cashflow</div>
+            <div class="chart-subtitle">Rencana vs Realisasi (Juta Rp)</div>
+          </div>
+          <div class="chart-tabs">
+            <div class="chart-tab active">Bulanan</div>
+            <div class="chart-tab" onclick="switchTab(this, 'cashflow', 'mingguan')">Mingguan</div>
+          </div>
+        </div>
+        <canvas id="cashflowChart" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Bobot Pekerjaan</div>
+            <div class="chart-subtitle">Distribusi per divisi</div>
+          </div>
+        </div>
+        <canvas id="bobotChart" height="200"></canvas>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Kurva S Progress</div>
+            <div class="chart-subtitle">Rencana vs Aktual</div>
+          </div>
+        </div>
+        <canvas id="kurvaChart" height="180"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Progress Pekerjaan</div>
+            <div class="chart-subtitle">Per kategori</div>
+          </div>
+        </div>
+        <canvas id="progressChart" height="180"></canvas>
+      </div>
+    </div>
+
+    <!-- RECENT -->
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">Aktivitas Terbaru</span>
+        <span class="badge badge-green">● Live</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Waktu</th><th>User</th><th>Aksi</th><th>Modul</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>14:32</td><td><strong>Ahmad S.</strong></td><td>Update AHSP</td><td><span class="badge badge-blue">AHSP</span></td><td><span class="badge badge-green">Sukses</span></td></tr>
+          <tr><td>13:55</td><td><strong>Budi R.</strong></td><td>Input Volume Beton</td><td><span class="badge badge-gold">Volume</span></td><td><span class="badge badge-green">Sukses</span></td></tr>
+          <tr><td>12:10</td><td><strong>Citra W.</strong></td><td>Generate RAB</td><td><span class="badge badge-purple">RAB</span></td><td><span class="badge badge-green">Sukses</span></td></tr>
+          <tr><td>11:45</td><td><strong>Dian P.</strong></td><td>Export Excel</td><td><span class="badge badge-gray">Rekap</span></td><td><span class="badge badge-green">Sukses</span></td></tr>
+          <tr><td>10:30</td><td><strong>Eko M.</strong></td><td>Upload Dokumen</td><td><span class="badge badge-blue">Dokumen</span></td><td><span class="badge badge-green">Sukses</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ AHSP ═══════════ -->
+  <div class="page" id="page-ahsp">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>AHSP</h1>
+        <p>Analisa Harga Satuan Pekerjaan</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showToast('Import Excel dibuka')">📤 Import Excel</button>
+        <button class="btn btn-secondary" onclick="showToast('Export berhasil')">📥 Export Excel</button>
+        <button class="btn btn-primary" onclick="openModal('ahsp')">+ Tambah AHSP</button>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">Data AHSP</span>
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" placeholder="Cari nama pekerjaan...">
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Kode</th><th>Nama Pekerjaan</th><th>Satuan</th><th>Koef. Material</th><th>Koef. Upah</th><th>Harga Satuan</th><th>Kategori</th><th>Aksi</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><strong>AHSP-001</strong></td><td>Pekerjaan Galian Tanah Biasa</td><td>m³</td><td>0.00</td><td>0.75</td><td><strong>Rp 45.000</strong></td><td><span class="badge badge-gold">Tanah</span></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit AHSP')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td>2</td><td><strong>AHSP-002</strong></td><td>Pekerjaan Beton K-225</td><td>m³</td><td>1.25</td><td>0.40</td><td><strong>Rp 1.250.000</strong></td><td><span class="badge badge-blue">Beton</span></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit AHSP')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td>3</td><td><strong>AHSP-003</strong></td><td>Pasangan Bata Merah</td><td>m²</td><td>0.82</td><td>0.30</td><td><strong>Rp 185.000</strong></td><td><span class="badge badge-red">Dinding</span></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit AHSP')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td>4</td><td><strong>AHSP-004</strong></td><td>Plesteran 1:4</td><td>m²</td><td>0.45</td><td>0.25</td><td><strong>Rp 65.000</strong></td><td><span class="badge badge-red">Dinding</span></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit AHSP')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td>5</td><td><strong>AHSP-005</strong></td><td>Pemasangan Keramik 40×40</td><td>m²</td><td>1.10</td><td>0.35</td><td><strong>Rp 220.000</strong></td><td><span class="badge badge-purple">Lantai</span></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit AHSP')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td>6</td><td><strong>AHSP-006</strong></td><td>Pasang Atap Genteng Metal</td><td>m²</td><td>1.05</td><td>0.20</td><td><strong>Rp 175.000</strong></td><td><span class="badge badge-green">Atap</span></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit AHSP')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ HSP ═══════════ -->
+  <div class="page" id="page-hsp">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>HSP</h1>
+        <p>Harga Satuan Pekerjaan</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showToast('Generate dari AHSP...')">⚡ Generate dari AHSP</button>
+        <button class="btn btn-secondary" onclick="showToast('Update harga otomatis selesai')">🔄 Update Harga Otomatis</button>
+        <button class="btn btn-secondary" onclick="showToast('Export berhasil')">📥 Export Excel</button>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">Data HSP</span>
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" placeholder="Cari pekerjaan...">
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Kode</th><th>Nama Pekerjaan</th><th>Satuan</th><th>Harga Satuan</th><th>Kategori</th><th>Terakhir Update</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>HSP-001</strong></td><td>Galian Tanah Biasa</td><td>m³</td><td><strong>Rp 45.000</strong></td><td><span class="badge badge-gold">Tanah</span></td><td>01 Jun 2026</td></tr>
+          <tr><td><strong>HSP-002</strong></td><td>Beton K-225</td><td>m³</td><td><strong>Rp 1.250.000</strong></td><td><span class="badge badge-blue">Beton</span></td><td>01 Jun 2026</td></tr>
+          <tr><td><strong>HSP-003</strong></td><td>Pasangan Bata Merah 1:4</td><td>m²</td><td><strong>Rp 185.000</strong></td><td><span class="badge badge-red">Dinding</span></td><td>28 Mei 2026</td></tr>
+          <tr><td><strong>HSP-004</strong></td><td>Keramik 40×40 cm</td><td>m²</td><td><strong>Rp 220.000</strong></td><td><span class="badge badge-purple">Lantai</span></td><td>28 Mei 2026</td></tr>
+          <tr><td><strong>HSP-005</strong></td><td>Atap Genteng Metal</td><td>m²</td><td><strong>Rp 175.000</strong></td><td><span class="badge badge-green">Atap</span></td><td>25 Mei 2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ BAHAN ═══════════ -->
+  <div class="page" id="page-bahan">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Data Bahan</h1>
+        <p>Manajemen material dan harga supplier</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showToast('Import Excel dibuka')">📤 Import</button>
+        <button class="btn btn-secondary" onclick="showToast('Export berhasil')">📥 Export</button>
+        <button class="btn btn-primary" onclick="openModal('bahan')">+ Tambah Bahan</button>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">Daftar Material</span>
+        <div class="search-box"><span>🔍</span><input type="text" placeholder="Cari bahan..."></div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Kode</th><th>Nama Bahan</th><th>Satuan</th><th>Harga</th><th>Supplier</th><th>Tgl Update</th><th>Aksi</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>BHN-001</strong></td><td>Semen Portland 50kg</td><td>Sak</td><td><strong>Rp 62.000</strong></td><td>PT Semen Gresik</td><td>01 Jun 2026</td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit bahan')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>BHN-002</strong></td><td>Besi Tulangan D10</td><td>kg</td><td><strong>Rp 14.500</strong></td><td>CV Besi Jaya</td><td>30 Mei 2026</td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit bahan')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>BHN-003</strong></td><td>Pasir Beton</td><td>m³</td><td><strong>Rp 285.000</strong></td><td>UD Pasir Mandiri</td><td>30 Mei 2026</td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit bahan')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>BHN-004</strong></td><td>Bata Merah</td><td>biji</td><td><strong>Rp 850</strong></td><td>PT Bata Makmur</td><td>28 Mei 2026</td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit bahan')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>BHN-005</strong></td><td>Keramik 40×40 cm</td><td>m²</td><td><strong>Rp 85.000</strong></td><td>Toko Roman</td><td>25 Mei 2026</td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit bahan')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ UPAH ═══════════ -->
+  <div class="page" id="page-upah">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Data Upah</h1>
+        <p>Manajemen upah tenaga kerja</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showToast('Export berhasil')">📥 Export</button>
+        <button class="btn btn-primary" onclick="openModal('upah')">+ Tambah Upah</button>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">Daftar Upah</span>
+        <div class="search-box"><span>🔍</span><input type="text" placeholder="Cari jabatan..."></div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Kode</th><th>Jabatan</th><th>Satuan</th><th>Harga</th><th>Keterangan</th><th>Aksi</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>UPH-001</strong></td><td>Mandor</td><td>OH</td><td><strong>Rp 180.000</strong></td><td>Termasuk asuransi</td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit upah')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>UPH-002</strong></td><td>Tukang Batu</td><td>OH</td><td><strong>Rp 150.000</strong></td><td>-</td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit upah')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>UPH-003</strong></td><td>Tukang Besi</td><td>OH</td><td><strong>Rp 155.000</strong></td><td>-</td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit upah')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>UPH-004</strong></td><td>Pekerja/Kernet</td><td>OH</td><td><strong>Rp 100.000</strong></td><td>Harian biasa</td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit upah')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ VOLUME ═══════════ -->
+  <div class="page" id="page-volume">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Hitung Volume</h1>
+        <p>Kalkulator volume pekerjaan konstruksi</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showToast('Export berhasil')">📥 Export Excel</button>
+        <button class="btn btn-primary" onclick="showToast('Hasil disimpan')">💾 Simpan Hasil</button>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-section-title">🧮 Pilih Tipe Perhitungan</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">
+        <button class="btn btn-primary" onclick="setVolType('beton', this)" id="vt-beton">Beton</button>
+        <button class="btn btn-secondary" onclick="setVolType('galian', this)" id="vt-galian">Galian</button>
+        <button class="btn btn-secondary" onclick="setVolType('urugan', this)" id="vt-urugan">Urugan</button>
+        <button class="btn btn-secondary" onclick="setVolType('dinding', this)" id="vt-dinding">Dinding</button>
+        <button class="btn btn-secondary" onclick="setVolType('keramik', this)" id="vt-keramik">Keramik</button>
+        <button class="btn btn-secondary" onclick="setVolType('atap', this)" id="vt-atap">Atap</button>
+        <button class="btn btn-secondary" onclick="setVolType('tulangan', this)" id="vt-tulangan">Tulangan</button>
+      </div>
+
+      <div id="vol-form">
+        <div class="form-grid" id="vol-inputs">
+          <div class="form-group">
+            <label class="form-label">Panjang (m)</label>
+            <input type="number" class="form-input" id="vol-p" value="10" oninput="hitungVolume()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lebar (m)</label>
+            <input type="number" class="form-input" id="vol-l" value="5" oninput="hitungVolume()">
+          </div>
+          <div class="form-group" id="vol-t-grp">
+            <label class="form-label">Tinggi (m)</label>
+            <input type="number" class="form-input" id="vol-t" value="3" oninput="hitungVolume()">
+          </div>
+          <div class="form-group" id="vol-k-grp" style="display:none">
+            <label class="form-label">Koefisien</label>
+            <input type="number" class="form-input" id="vol-k" value="1.2" oninput="hitungVolume()">
+          </div>
+        </div>
+
+        <div style="margin-top:18px;padding:18px;background:var(--bg3);border-radius:10px;display:flex;align-items:center;gap:16px;">
+          <div style="flex:1">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">Formula:</div>
+            <div id="vol-formula" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text3);">Volume = Panjang × Lebar × Tinggi</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">Hasil:</div>
+            <div id="vol-result" style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--accent);">150 m³</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Riwayat Perhitungan</span></div>
+      <table>
+        <thead><tr><th>Tipe</th><th>Deskripsi</th><th>Dimensi</th><th>Hasil</th><th>Tanggal</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge badge-blue">Beton</span></td><td>Pondasi Footplat F1</td><td>2×2×0.4m</td><td><strong>1.6 m³</strong></td><td>01 Jun 2026</td></tr>
+          <tr><td><span class="badge badge-gold">Galian</span></td><td>Galian Tanah Kolom K1</td><td>1×1×2m</td><td><strong>2.0 m³</strong></td><td>31 Mei 2026</td></tr>
+          <tr><td><span class="badge badge-red">Dinding</span></td><td>Dinding Lt.1 As-A</td><td>24×3.5m</td><td><strong>84 m²</strong></td><td>30 Mei 2026</td></tr>
+          <tr><td><span class="badge badge-purple">Keramik</span></td><td>Lantai Ruang Utama</td><td>8×6m</td><td><strong>48 m²</strong></td><td>29 Mei 2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ RAB ═══════════ -->
+  <div class="page" id="page-rab">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Hitung RAB</h1>
+        <p>Rencana Anggaran Biaya Proyek</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showToast('Ambil dari AHSP')">⚡ Ambil AHSP</button>
+        <button class="btn btn-secondary" onclick="showToast('Ambil dari HSP')">⚡ Ambil HSP</button>
+        <button class="btn btn-primary" onclick="openModal('rab')">+ Tambah Item</button>
+      </div>
+    </div>
+
+    <div class="table-card section-gap">
+      <div class="table-header">
+        <span class="table-title">Detail Item RAB</span>
+        <div class="search-box"><span>🔍</span><input type="text" placeholder="Cari item..."></div>
+      </div>
+      <table>
+        <thead><tr><th>Kode</th><th>Uraian Pekerjaan</th><th>Vol</th><th>Sat</th><th>Harga Satuan</th><th>Jumlah Harga</th><th>Aksi</th></tr></thead>
+        <tbody>
+          <tr><td><strong>RAB-001</strong></td><td>Pekerjaan Galian Tanah</td><td>125</td><td>m³</td><td>Rp 45.000</td><td><strong>Rp 5.625.000</strong></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit item')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>RAB-002</strong></td><td>Pekerjaan Beton K-225</td><td>48</td><td>m³</td><td>Rp 1.250.000</td><td><strong>Rp 60.000.000</strong></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit item')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>RAB-003</strong></td><td>Pasangan Bata Merah 1:4</td><td>320</td><td>m²</td><td>Rp 185.000</td><td><strong>Rp 59.200.000</strong></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit item')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>RAB-004</strong></td><td>Plesteran 1:4</td><td>640</td><td>m²</td><td>Rp 65.000</td><td><strong>Rp 41.600.000</strong></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit item')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+          <tr><td><strong>RAB-005</strong></td><td>Pemasangan Keramik 40×40</td><td>180</td><td>m²</td><td>Rp 220.000</td><td><strong>Rp 39.600.000</strong></td><td><div class="action-btns"><button class="icon-btn edit" onclick="showToast('Edit item')">✏️</button><button class="icon-btn del" onclick="showToast('Hapus dibatalkan')">🗑️</button></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="form-card">
+      <div class="form-section-title">💰 Ringkasan RAB</div>
+      <div style="max-width:400px;margin-left:auto;">
+        <table style="width:100%">
+          <tr><td style="padding:8px 0;color:var(--text2)">Subtotal</td><td style="text-align:right;font-weight:600">Rp 206.025.000</td></tr>
+          <tr><td style="padding:8px 0;color:var(--text2)">PPN (11%)</td><td style="text-align:right;font-weight:600">Rp 22.662.750</td></tr>
+          <tr><td style="padding:8px 0;color:var(--text2)">PPh (2%)</td><td style="text-align:right;font-weight:600">Rp 4.120.500</td></tr>
+          <tr><td style="padding:8px 0;color:var(--text2)">Overhead (5%)</td><td style="text-align:right;font-weight:600">Rp 10.301.250</td></tr>
+          <tr><td style="padding:8px 0;color:var(--text2)">Profit (10%)</td><td style="text-align:right;font-weight:600">Rp 20.602.500</td></tr>
+          <tr style="border-top:2px solid var(--accent)"><td style="padding:12px 0;font-weight:700;font-size:15px;color:var(--accent)">GRAND TOTAL</td><td style="text-align:right;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent)">Rp 263.712.000</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ REKAP ═══════════ -->
+  <div class="page" id="page-rekap">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Rekapitulasi RAB</h1>
+        <p>Rekap seluruh nilai pekerjaan proyek</p>
+      </div>
+      <div class="btn-group">
+        <select class="form-select" style="width:auto">
+          <option>Semua Divisi</option>
+          <option>Struktur</option>
+          <option>Arsitektur</option>
+          <option>MEP</option>
+        </select>
+        <select class="form-select" style="width:auto">
+          <option>Semua Lantai</option>
+          <option>Lantai 1</option>
+          <option>Lantai 2</option>
+          <option>Lantai 3</option>
+        </select>
+        <button class="btn btn-primary" onclick="showToast('Export PDF berhasil')">📄 Export PDF</button>
+      </div>
+    </div>
+
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="stat-card gold"><div class="stat-icon">🏗️</div><div class="stat-value">Rp 263M</div><div class="stat-label">Total RAB</div></div>
+      <div class="stat-card blue"><div class="stat-icon">📐</div><div class="stat-value">18.4K</div><div class="stat-label">Total Volume</div></div>
+      <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-value">284</div><div class="stat-label">Item Pekerjaan</div></div>
+      <div class="stat-card purple"><div class="stat-icon">🏢</div><div class="stat-value">4</div><div class="stat-label">Divisi Kerja</div></div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Rekap Per Divisi</span></div>
+      <table>
+        <thead><tr><th>No</th><th>Divisi</th><th>Jumlah Item</th><th>Total Volume</th><th>Nilai Pekerjaan</th><th>Bobot (%)</th></tr></thead>
+        <tbody>
+          <tr><td>I</td><td><strong>Pekerjaan Persiapan</strong></td><td>8</td><td>-</td><td><strong>Rp 15.400.000</strong></td><td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:80px"><div class="progress-fill" style="width:58%"></div></div><span>5.8%</span></div></td></tr>
+          <tr><td>II</td><td><strong>Pekerjaan Struktur</strong></td><td>62</td><td>486 m³</td><td><strong>Rp 142.800.000</strong></td><td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:80px"><div class="progress-fill blue" style="width:54%"></div></div><span>54.1%</span></div></td></tr>
+          <tr><td>III</td><td><strong>Pekerjaan Arsitektur</strong></td><td>84</td><td>3420 m²</td><td><strong>Rp 87.600.000</strong></td><td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:80px"><div class="progress-fill green" style="width:33%"></div></div><span>33.2%</span></div></td></tr>
+          <tr><td>IV</td><td><strong>Pekerjaan MEP</strong></td><td>130</td><td>-</td><td><strong>Rp 17.912.000</strong></td><td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:80px"><div class="progress-fill" style="width:68%"></div></div><span>6.8%</span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ BOBOT ═══════════ -->
+  <div class="page" id="page-bobot">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Bobot Pekerjaan</h1>
+        <p>Rumus: Bobot = Nilai Item ÷ Total Nilai Proyek × 100%</p>
+      </div>
+      <button class="btn btn-primary" onclick="showToast('Export berhasil')">📥 Export</button>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title">Bobot Per Divisi</div></div>
+        <canvas id="bobotDivisiChart" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title">Distribusi Bobot</div></div>
+        <canvas id="bobotPieChart" height="200"></canvas>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Bobot Per Item Pekerjaan</span></div>
+      <table>
+        <thead><tr><th>Kode</th><th>Uraian</th><th>Divisi</th><th>Nilai (Rp)</th><th>Bobot (%)</th><th>Akumulasi (%)</th></tr></thead>
+        <tbody>
+          <tr><td>RAB-002</td><td>Beton K-225</td><td><span class="badge badge-blue">Struktur</span></td><td>60.000.000</td><td><strong>22.8%</strong></td><td>22.8%</td></tr>
+          <tr><td>RAB-003</td><td>Pasangan Bata Merah</td><td><span class="badge badge-red">Arsitektur</span></td><td>59.200.000</td><td><strong>22.5%</strong></td><td>45.3%</td></tr>
+          <tr><td>RAB-004</td><td>Plesteran 1:4</td><td><span class="badge badge-red">Arsitektur</span></td><td>41.600.000</td><td><strong>15.8%</strong></td><td>61.1%</td></tr>
+          <tr><td>RAB-005</td><td>Keramik 40×40</td><td><span class="badge badge-purple">Lantai</span></td><td>39.600.000</td><td><strong>15.0%</strong></td><td>76.1%</td></tr>
+          <tr><td>RAB-001</td><td>Galian Tanah</td><td><span class="badge badge-gold">Persiapan</span></td><td>5.625.000</td><td><strong>2.1%</strong></td><td>78.2%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ KURVA S ═══════════ -->
+  <div class="page" id="page-kurvas">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Kurva S</h1>
+        <p>Progress Rencana vs Aktual & Deviasi</p>
+      </div>
+      <div class="btn-group">
+        <div class="chart-tabs">
+          <div class="chart-tab active">Mingguan</div>
+          <div class="chart-tab">Bulanan</div>
+        </div>
+        <button class="btn btn-primary" onclick="showToast('Export Kurva S')">📥 Export</button>
+      </div>
+    </div>
+
+    <div class="kurva-info">
+      <div class="kurva-info-item">
+        <div class="val" style="color:var(--blue)">78.5%</div>
+        <div class="lbl">Progress Rencana</div>
+      </div>
+      <div class="kurva-info-item">
+        <div class="val" style="color:var(--green)">71.2%</div>
+        <div class="lbl">Progress Aktual</div>
+      </div>
+      <div class="kurva-info-item">
+        <div class="val" style="color:var(--red)">-7.3%</div>
+        <div class="lbl">Deviasi</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <canvas id="kurvaSChart" height="280"></canvas>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ SMKK ═══════════ -->
+  <div class="page" id="page-smkk">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>RAB SMKK</h1>
+        <p>Sistem Manajemen Keselamatan Konstruksi</p>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('smkk')">+ Tambah Item</button>
+    </div>
+
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat-card red"><div class="stat-icon">🦺</div><div class="stat-value">Rp 186K</div><div class="stat-label">Total Biaya SMKK</div></div>
+      <div class="stat-card gold"><div class="stat-icon">📊</div><div class="stat-value">4.8%</div><div class="stat-label">Persentase SMKK</div></div>
+      <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-value">7</div><div class="stat-label">Kategori K3</div></div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Detail Biaya SMKK</span></div>
+      <table>
+        <thead><tr><th>No</th><th>Kategori</th><th>Uraian</th><th>Volume</th><th>Harga Satuan</th><th>Jumlah</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><span class="badge badge-red">APD</span></td><td>Helm Proyek SNI</td><td>42 bh</td><td>Rp 85.000</td><td><strong>Rp 3.570.000</strong></td></tr>
+          <tr><td>2</td><td><span class="badge badge-red">APD</span></td><td>Sepatu Safety</td><td>42 ps</td><td>Rp 250.000</td><td><strong>Rp 10.500.000</strong></td></tr>
+          <tr><td>3</td><td><span class="badge badge-gold">Rambu K3</span></td><td>Rambu Peringatan</td><td>12 bh</td><td>Rp 150.000</td><td><strong>Rp 1.800.000</strong></td></tr>
+          <tr><td>4</td><td><span class="badge badge-blue">Safety Line</span></td><td>Garis Pengaman</td><td>200 m</td><td>Rp 15.000</td><td><strong>Rp 3.000.000</strong></td></tr>
+          <tr><td>5</td><td><span class="badge badge-blue">Safety Net</span></td><td>Jaring Pengaman</td><td>80 m²</td><td>Rp 45.000</td><td><strong>Rp 3.600.000</strong></td></tr>
+          <tr><td>6</td><td><span class="badge badge-purple">Pelatihan</span></td><td>Safety Induction</td><td>1 keg</td><td>Rp 5.000.000</td><td><strong>Rp 5.000.000</strong></td></tr>
+          <tr><td>7</td><td><span class="badge badge-green">Kesehatan</span></td><td>Pemeriksaan Medis</td><td>42 org</td><td>Rp 200.000</td><td><strong>Rp 8.400.000</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ PENAWARAN ═══════════ -->
+  <div class="page" id="page-penawaran">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Dokumen Penawaran</h1>
+        <p>Generate dokumen penawaran otomatis</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showToast('Generate PDF...')">📄 Export PDF</button>
+        <button class="btn btn-primary" onclick="showToast('Generate DOCX...')">📝 Export DOCX</button>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-section-title">📝 Data Penawaran</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Nama Perusahaan</label><input type="text" class="form-input" value="CV Konstruksi Maju"></div>
+        <div class="form-group"><label class="form-label">Nomor Penawaran</label><input type="text" class="form-input" value="PNW/2026/006/RAB"></div>
+        <div class="form-group"><label class="form-label">Kepada Yth.</label><input type="text" class="form-input" value="Pejabat Pembuat Komitmen"></div>
+        <div class="form-group"><label class="form-label">Nama Proyek</label><input type="text" class="form-input" value="Pembangunan Gedung Serbaguna"></div>
+        <div class="form-group"><label class="form-label">Nilai Penawaran</label><input type="text" class="form-input" value="Rp 263.712.000,-"></div>
+        <div class="form-group"><label class="form-label">Tanggal Penawaran</label><input type="date" class="form-input" value="2026-06-01"></div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-section-title">📎 Komponen Dokumen</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
+        <label style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg3);border-radius:8px;cursor:pointer">
+          <input type="checkbox" checked style="accent-color:var(--accent)"> <span style="font-size:13px">Cover Dokumen</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg3);border-radius:8px;cursor:pointer">
+          <input type="checkbox" checked style="accent-color:var(--accent)"> <span style="font-size:13px">Surat Penawaran</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg3);border-radius:8px;cursor:pointer">
+          <input type="checkbox" checked style="accent-color:var(--accent)"> <span style="font-size:13px">Rekap Harga</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg3);border-radius:8px;cursor:pointer">
+          <input type="checkbox" checked style="accent-color:var(--accent)"> <span style="font-size:13px">Tanda Tangan</span>
+        </label>
+      </div>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ CCO ═══════════ -->
+  <div class="page" id="page-cco">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>CCO</h1>
+        <p>Contract Change Order — Revisi Kontrak</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="openModal('cco-tambah')">+ Tambah Item</button>
+        <button class="btn btn-secondary" onclick="showToast('Kurang item')">− Kurang Item</button>
+        <button class="btn btn-primary" onclick="showToast('Revisi harga disimpan')">✏️ Revisi Harga</button>
+      </div>
+    </div>
+    <div class="table-card section-gap">
+      <div class="table-header"><span class="table-title">Riwayat Revisi CCO</span></div>
+      <table>
+        <thead><tr><th>No CCO</th><th>Tanggal</th><th>Jenis</th><th>Uraian</th><th>Nilai Awal</th><th>Nilai Baru</th><th>Selisih</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CCO-001</strong></td><td>15 Apr 2026</td><td><span class="badge badge-green">Tambah</span></td><td>Penambahan Kolom K-7</td><td>-</td><td>Rp 8.500.000</td><td style="color:var(--green)">+8.500.000</td><td><span class="badge badge-green">Approved</span></td></tr>
+          <tr><td><strong>CCO-002</strong></td><td>22 Apr 2026</td><td><span class="badge badge-red">Kurang</span></td><td>Pengurangan Partisi R.101</td><td>Rp 4.200.000</td><td>Rp 2.100.000</td><td style="color:var(--red)">-2.100.000</td><td><span class="badge badge-green">Approved</span></td></tr>
+          <tr><td><strong>CCO-003</strong></td><td>10 Mei 2026</td><td><span class="badge badge-gold">Revisi</span></td><td>Update Harga Material Besi</td><td>Rp 60.000.000</td><td>Rp 65.400.000</td><td style="color:var(--green)">+5.400.000</td><td><span class="badge badge-gold">Pending</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ ABSENSI ═══════════ -->
+  <div class="page" id="page-absensi">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Absensi Pekerja</h1>
+        <p>Rekap kehadiran harian & bulanan</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showToast('QR Code ditampilkan')">📱 QR Code</button>
+        <button class="btn btn-secondary" onclick="showToast('Rekap bulanan diexport')">📥 Rekap Bulanan</button>
+        <button class="btn btn-primary" onclick="openModal('absensi')">+ Input Absensi</button>
+      </div>
+    </div>
+
+    <div class="absensi-grid">
+      <div class="pekerja-card">
+        <div class="pekerja-avatar" style="background:linear-gradient(135deg,#f0a500,#e07b00);color:#000">AH</div>
+        <div class="pekerja-name">Ahmad Hidayat</div>
+        <div class="pekerja-role">Mandor</div>
+        <span class="badge badge-green">● Hadir</span>
+      </div>
+      <div class="pekerja-card">
+        <div class="pekerja-avatar" style="background:linear-gradient(135deg,#3d7fff,#2563eb);color:#fff">BR</div>
+        <div class="pekerja-name">Budi Raharjo</div>
+        <div class="pekerja-role">Tukang Batu</div>
+        <span class="badge badge-green">● Hadir</span>
+      </div>
+      <div class="pekerja-card">
+        <div class="pekerja-avatar" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff">CW</div>
+        <div class="pekerja-name">Candra Wijaya</div>
+        <div class="pekerja-role">Tukang Besi</div>
+        <span class="badge badge-red">● Absen</span>
+      </div>
+      <div class="pekerja-card">
+        <div class="pekerja-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff">DP</div>
+        <div class="pekerja-name">Dani Pratama</div>
+        <div class="pekerja-role">Pekerja</div>
+        <span class="badge badge-green">● Hadir</span>
+      </div>
+      <div class="pekerja-card">
+        <div class="pekerja-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff">EM</div>
+        <div class="pekerja-name">Eko Mulyono</div>
+        <div class="pekerja-role">Tukang Kayu</div>
+        <span class="badge badge-gold">● Izin</span>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Rekap Harian — 1 Juni 2026</span></div>
+      <table>
+        <thead><tr><th>Nama</th><th>Jabatan</th><th>Jam Masuk</th><th>Jam Keluar</th><th>Foto</th><th>Lokasi</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Ahmad Hidayat</strong></td><td>Mandor</td><td>07:02</td><td>17:15</td><td><span class="badge badge-green">✓ Ada</span></td><td>📍 Site A</td><td><span class="badge badge-green">Hadir</span></td></tr>
+          <tr><td><strong>Budi Raharjo</strong></td><td>Tukang Batu</td><td>07:18</td><td>17:00</td><td><span class="badge badge-green">✓ Ada</span></td><td>📍 Site A</td><td><span class="badge badge-green">Hadir</span></td></tr>
+          <tr><td><strong>Candra Wijaya</strong></td><td>Tukang Besi</td><td>-</td><td>-</td><td><span class="badge badge-gray">-</span></td><td>-</td><td><span class="badge badge-red">Absen</span></td></tr>
+          <tr><td><strong>Dani Pratama</strong></td><td>Pekerja</td><td>07:30</td><td>17:00</td><td><span class="badge badge-green">✓ Ada</span></td><td>📍 Site B</td><td><span class="badge badge-green">Hadir</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ USER ROLE ═══════════ -->
+  <div class="page" id="page-user-role">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>User & Role</h1>
+        <p>Manajemen akses berbasis peran (RBAC)</p>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('user')">+ Tambah User</button>
+    </div>
+
+    <div class="role-grid">
+      <div class="role-card">
+        <h3><span style="background:rgba(240,165,0,0.15);padding:4px 8px;border-radius:6px;color:var(--accent)">👑 Administrator</span></h3>
+        <div class="role-perm">Hak akses penuh semua modul</div>
+        <div class="role-perm">AHSP, HSP, Bahan, Upah</div>
+        <div class="role-perm">Volume, RAB, Rekap</div>
+        <div class="role-perm">Dokumen, Absensi, CCO</div>
+        <div class="role-perm">User Management</div>
+        <div class="role-perm">Firebase Settings</div>
+      </div>
+      <div class="role-card">
+        <h3><span style="background:rgba(61,127,255,0.15);padding:4px 8px;border-radius:6px;color:var(--blue)">📐 Qty Surveyor</span></h3>
+        <div class="role-perm">AHSP & HSP</div>
+        <div class="role-perm">Volume</div>
+        <div class="role-perm">RAB & Rekapitulasi</div>
+        <div class="role-perm">Bobot Pekerjaan</div>
+      </div>
+      <div class="role-card">
+        <h3><span style="background:rgba(34,197,94,0.15);padding:4px 8px;border-radius:6px;color:var(--green)">⚙️ Site Engineer</span></h3>
+        <div class="role-perm">Hitung Volume</div>
+        <div class="role-perm">Kurva S</div>
+        <div class="role-perm">Absensi Pekerja</div>
+        <div class="role-perm">Lihat Progress</div>
+      </div>
+      <div class="role-card">
+        <h3><span style="background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:6px;color:var(--text2)">👁️ Viewer</span></h3>
+        <div class="role-perm">Read Only semua modul</div>
+        <div class="role-perm">Dashboard & Statistik</div>
+        <div class="role-perm">Tidak dapat edit data</div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Daftar User</span></div>
+      <table>
+        <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Login Terakhir</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><div style="display:flex;align-items:center;gap:9px"><div class="user-avatar" style="width:30px;height:30px;font-size:12px">AD</div><strong>Admin Utama</strong></div></td><td>admin@rabpro.id</td><td><span class="badge badge-gold">Administrator</span></td><td>Hari ini, 14:30</td><td><span class="badge badge-green">● Aktif</span></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:9px"><div class="user-avatar" style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,var(--blue),var(--blue2))">QS</div><strong>Budi QS</strong></div></td><td>budi@rabpro.id</td><td><span class="badge badge-blue">Qty Surveyor</span></td><td>Hari ini, 13:55</td><td><span class="badge badge-green">● Aktif</span></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:9px"><div class="user-avatar" style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,var(--green),#16a34a)">SE</div><strong>Citra Engineer</strong></div></td><td>citra@rabpro.id</td><td><span class="badge badge-green">Site Engineer</span></td><td>Hari ini, 10:20</td><td><span class="badge badge-green">● Aktif</span></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:9px"><div class="user-avatar" style="width:30px;height:30px;font-size:12px;background:var(--card2)">VW</div><strong>Dian Viewer</strong></div></td><td>dian@rabpro.id</td><td><span class="badge badge-gray">Viewer</span></td><td>28 Mei 2026</td><td><span class="badge badge-gray">● Tidak Aktif</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ FIREBASE ═══════════ -->
+  <div class="page" id="page-firebase">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Firebase Structure</h1>
+        <p>Arsitektur database & storage</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
+      <div class="form-card">
+        <div class="form-section-title">🔥 Firestore Collections</div>
+        <div class="tree-container">
+          <div class="tree-item root">📁 / (root)</div>
+          <div class="tree-item sub collection">├── users</div>
+          <div class="tree-item sub collection">├── projects</div>
+          <div class="tree-item sub collection">├── project_items</div>
+          <div class="tree-item sub collection">├── ahsp</div>
+          <div class="tree-item sub collection">├── hsp</div>
+          <div class="tree-item sub collection">├── materials</div>
+          <div class="tree-item sub collection">├── wages</div>
+          <div class="tree-item sub collection">├── volumes</div>
+          <div class="tree-item sub collection">├── rab</div>
+          <div class="tree-item sub collection">├── rab_items</div>
+          <div class="tree-item sub collection">├── bobot</div>
+          <div class="tree-item sub collection">├── kurva_s</div>
+          <div class="tree-item sub collection">├── smkk</div>
+          <div class="tree-item sub collection">├── attendance</div>
+          <div class="tree-item sub collection">├── documents</div>
+          <div class="tree-item sub collection">└── activity_logs</div>
+        </div>
+      </div>
+      <div class="form-card">
+        <div class="form-section-title">🗄️ Storage Folders</div>
+        <div class="tree-container">
+          <div class="tree-item root">📦 storage/</div>
+          <div class="tree-item sub collection">├── uploads/</div>
+          <div class="tree-item sub collection">├── documents/</div>
+          <div class="tree-item sub collection">├── attendance/</div>
+          <div class="tree-item sub" style="padding-left:40px">└── photos/</div>
+          <div class="tree-item sub collection">├── project-files/</div>
+          <div class="tree-item sub collection">└── export/</div>
+        </div>
+        <div style="margin-top:16px">
+          <div class="form-section-title">🔐 Security</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <span class="badge badge-blue" style="width:fit-content">Firebase Authentication</span>
+            <span class="badge badge-gold" style="width:fit-content">Email Login</span>
+            <span class="badge badge-green" style="width:fit-content">Google Login</span>
+            <span class="badge badge-purple" style="width:fit-content">Role Based Access Control</span>
+            <span class="badge badge-green" style="width:fit-content">Multi User Realtime</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-card">
+        <div class="form-section-title">🚀 Deployment Stack</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="background:var(--bg3);border-radius:8px;padding:12px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">FRONTEND</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span class="badge badge-blue">HTML5</span>
+              <span class="badge badge-blue">TailwindCSS</span>
+              <span class="badge badge-blue">JavaScript</span>
+            </div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:12px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">BACKEND</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span class="badge badge-gold">Firebase Auth</span>
+              <span class="badge badge-gold">Firestore</span>
+              <span class="badge badge-gold">Storage</span>
+            </div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:12px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">HOSTING</div>
+            <span class="badge badge-green">▲ Vercel</span>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:12px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">VERSI</div>
+            <span class="badge badge-purple">v1.0 Professional RAB System</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+  <!-- ═══════════ PANDUAN ═══════════ -->
+  <div class="page" id="page-panduan">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Panduan Penggunaan</h1>
+        <p>Tutorial lengkap RAB Pro Professional</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
+      <div class="form-card" style="cursor:pointer" onclick="showToast('Panduan: Membuat Proyek')">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="width:40px;height:40px;background:rgba(240,165,0,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">🏗️</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px">Membuat Proyek</div>
+            <div style="font-size:11px;color:var(--text3)">Tutorial #1</div>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--text2);line-height:1.6">Pelajari cara membuat proyek baru, mengatur nama, lokasi, dan data umum proyek konstruksi.</p>
+      </div>
+      <div class="form-card" style="cursor:pointer" onclick="showToast('Panduan: Mengelola AHSP')">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="width:40px;height:40px;background:rgba(61,127,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">📋</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px">Mengelola AHSP</div>
+            <div style="font-size:11px;color:var(--text3)">Tutorial #2</div>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--text2);line-height:1.6">Cara input, edit, dan import data Analisa Harga Satuan Pekerjaan dari Excel.</p>
+      </div>
+      <div class="form-card" style="cursor:pointer" onclick="showToast('Panduan: Mengelola HSP')">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="width:40px;height:40px;background:rgba(34,197,94,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">💰</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px">Mengelola HSP</div>
+            <div style="font-size:11px;color:var(--text3)">Tutorial #3</div>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--text2);line-height:1.6">Generate Harga Satuan Pekerjaan secara otomatis dari data AHSP yang sudah diinput.</p>
+      </div>
+      <div class="form-card" style="cursor:pointer" onclick="showToast('Panduan: Menghitung Volume')">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="width:40px;height:40px;background:rgba(139,92,246,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">📐</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px">Menghitung Volume</div>
+            <div style="font-size:11px;color:var(--text3)">Tutorial #4</div>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--text2);line-height:1.6">Gunakan kalkulator volume untuk beton, galian, dinding, keramik, atap, dan tulangan.</p>
+      </div>
+      <div class="form-card" style="cursor:pointer" onclick="showToast('Panduan: Menghitung RAB')">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="width:40px;height:40px;background:rgba(240,165,0,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">🧮</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px">Menghitung RAB</div>
+            <div style="font-size:11px;color:var(--text3)">Tutorial #5</div>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--text2);line-height:1.6">Input item pekerjaan, ambil dari AHSP/HSP, dan hitung grand total RAB secara otomatis.</p>
+      </div>
+      <div class="form-card" style="cursor:pointer" onclick="showToast('Panduan: Membuat Kurva S')">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="width:40px;height:40px;background:rgba(61,127,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">📈</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px">Membuat Kurva S</div>
+            <div style="font-size:11px;color:var(--text3)">Tutorial #6</div>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--text2);line-height:1.6">Buat jadwal rencana dan input progress aktual untuk memantau deviasi proyek.</p>
+      </div>
+      <div class="form-card" style="cursor:pointer" onclick="showToast('Panduan: Membuat CCO')">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div style="width:40px;height:40px;background:rgba(239,68,68,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">🔄</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px">Membuat CCO</div>
+            <div style="font-size:11px;color:var(--text3)">Tutorial #7</div>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--text2);line-height:1.6">Kelola perubahan kontrak, tambah/kurang item, dan simpan riwayat revisi lengkap.</p>
+      </div>
+    </div>
+    <div class="page-bottom"></div>
+  </div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <div class="modal-title">
+      <span id="modal-title-text">Tambah Data</span>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div id="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Kode</label><input type="text" class="form-input" placeholder="Kode item"></div>
+        <div class="form-group"><label class="form-label">Nama</label><input type="text" class="form-input" placeholder="Nama pekerjaan"></div>
+        <div class="form-group"><label class="form-label">Satuan</label><select class="form-select"><option>m³</option><option>m²</option><option>m</option><option>kg</option><option>bh</option><option>ls</option></select></div>
+        <div class="form-group"><label class="form-label">Kategori</label><select class="form-select"><option>Tanah</option><option>Beton</option><option>Dinding</option><option>Lantai</option><option>Atap</option><option>MEP</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModalDirect()">Batal</button>
+      <button class="btn btn-primary" onclick="saveModal()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toast-msg">Data berhasil disimpan</span>
+</div>
+
+<script>
+// ── NAVIGATION ────────────────────────────────
+function navigate(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (el) el.classList.add('active');
+  const titles = {
+    dashboard:'Dashboard', ahsp:'AHSP', hsp:'HSP', bahan:'Bahan', upah:'Upah',
+    volume:'Hitung Volume', rab:'Hitung RAB', rekap:'Rekapitulasi RAB',
+    bobot:'Bobot Pekerjaan', kurvas:'Kurva S', smkk:'RAB SMKK',
+    penawaran:'Penawaran', cco:'CCO', absensi:'Absensi Pekerja',
+    'user-role':'User & Role', firebase:'Firebase Structure', panduan:'Panduan'
+  };
+  document.getElementById('breadcrumb-title').textContent = titles[page] || page;
+}
+
+// ── TOAST ─────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── MODAL ─────────────────────────────────────
+function openModal(type) {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+function saveModal() {
+  closeModalDirect();
+  showToast('Data berhasil disimpan!');
+}
+
+// ── VOLUME CALC ────────────────────────────────
+let volType = 'beton';
+function setVolType(t, el) {
+  volType = t;
+  document.querySelectorAll('[id^="vt-"]').forEach(b => { b.className = 'btn btn-secondary'; });
+  el.className = 'btn btn-primary';
+  const tGrp = document.getElementById('vol-t-grp');
+  const kGrp = document.getElementById('vol-k-grp');
+  const pLabel = document.querySelector('#vol-inputs .form-group:first-child .form-label');
+  const lGrp = document.querySelector('#vol-inputs .form-group:nth-child(2)');
+
+  kGrp.style.display = 'none';
+  tGrp.style.display = '';
+  lGrp.style.display = '';
+
+  const formulas = {
+    beton: 'Volume = Panjang × Lebar × Tinggi (m³)',
+    galian: 'Volume = Panjang × Lebar × Tinggi (m³)',
+    urugan: 'Volume = Panjang × Lebar × Tinggi (m³)',
+    dinding: 'Volume = Panjang × Tinggi (m²)',
+    keramik: 'Volume = Panjang × Lebar (m²)',
+    atap: 'Volume = Panjang × Lebar × Koefisien (m²)',
+    tulangan: 'Berat = Diameter² ÷ 162 × Panjang (kg)'
+  };
+  document.getElementById('vol-formula').textContent = formulas[t];
+
+  if (t === 'dinding') { lGrp.style.display = 'none'; pLabel.textContent = 'Panjang (m)'; }
+  else if (t === 'keramik') { tGrp.style.display = 'none'; pLabel.textContent = 'Panjang (m)'; }
+  else if (t === 'atap') { kGrp.style.display = ''; tGrp.style.display = 'none'; pLabel.textContent = 'Panjang (m)'; }
+  else if (t === 'tulangan') {
+    pLabel.textContent = 'Diameter (mm)';
+    document.querySelector('#vol-inputs .form-group:nth-child(2) .form-label').textContent = 'Panjang (m)';
+    document.querySelector('#vol-inputs .form-group:nth-child(3) .form-label').textContent = 'Jumlah Batang';
+    lGrp.style.display = '';
+    kGrp.style.display = 'none';
+  }
+  hitungVolume();
+}
+
+function hitungVolume() {
+  const p = parseFloat(document.getElementById('vol-p').value) || 0;
+  const l = parseFloat(document.getElementById('vol-l').value) || 0;
+  const t = parseFloat(document.getElementById('vol-t').value) || 0;
+  const k = parseFloat(document.getElementById('vol-k').value) || 1;
+  let result = 0, unit = 'm³';
+
+  if (volType === 'beton' || volType === 'galian' || volType === 'urugan') { result = p * l * t; unit = 'm³'; }
+  else if (volType === 'dinding') { result = p * t; unit = 'm²'; }
+  else if (volType === 'keramik') { result = p * l; unit = 'm²'; }
+  else if (volType === 'atap') { result = p * l * k; unit = 'm²'; }
+  else if (volType === 'tulangan') { result = (p * p / 162) * l * t; unit = 'kg'; }
+
+  document.getElementById('vol-result').textContent = result.toFixed(2) + ' ' + unit;
+}
+
+// ── CHARTS ────────────────────────────────────
+function initCharts() {
+  const gridColor = 'rgba(45,58,94,0.4)';
+  const accent = '#f0a500';
+  const blue = '#3d7fff';
+  const green = '#22c55e';
+  const red = '#ef4444';
+
+  // CASHFLOW
+  new Chart(document.getElementById('cashflowChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags'],
+      datasets: [
+        { label: 'Rencana', data: [150,280,420,580,720,850,920,980], backgroundColor: 'rgba(61,127,255,0.5)', borderColor: blue, borderWidth: 1.5, borderRadius: 4 },
+        { label: 'Realisasi', data: [130,250,390,530,680,710,0,0], backgroundColor: 'rgba(34,197,94,0.5)', borderColor: green, borderWidth: 1.5, borderRadius: 4 }
+      ]
+    },
+    options: { responsive: true, plugins: { legend: { labels: { color: '#8b95b0', font: { family: 'DM Sans' } } } }, scales: { x: { grid: { color: gridColor }, ticks: { color: '#5a6480' } }, y: { grid: { color: gridColor }, ticks: { color: '#5a6480' } } } }
+  });
+
+  // BOBOT DONUT
+  new Chart(document.getElementById('bobotChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Persiapan', 'Struktur', 'Arsitektur', 'MEP'],
+      datasets: [{ data: [5.8, 54.1, 33.2, 6.8], backgroundColor: [accent, blue, '#8b5cf6', green], borderWidth: 0 }]
+    },
+    options: { responsive: true, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { color: '#8b95b0', padding: 12, font: { family: 'DM Sans', size: 11 } } } } }
+  });
+
+  // KURVA S
+  new Chart(document.getElementById('kurvaChart'), {
+    type: 'line',
+    data: {
+      labels: ['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12'],
+      datasets: [
+        { label: 'Rencana', data: [5,12,22,35,48,60,70,78.5,85,90,95,100], borderColor: blue, fill: false, tension: 0.4, borderWidth: 2 },
+        { label: 'Aktual', data: [4,10,19,30,44,55,63,71.2,null,null,null,null], borderColor: green, fill: false, tension: 0.4, borderWidth: 2, borderDash: [4,4] }
+      ]
+    },
+    options: { responsive: true, plugins: { legend: { labels: { color: '#8b95b0', font: { family: 'DM Sans' } } } }, scales: { x: { grid: { color: gridColor }, ticks: { color: '#5a6480' } }, y: { grid: { color: gridColor }, ticks: { color: '#5a6480', callback: v => v + '%' } } } }
+  });
+
+  // PROGRESS BAR CHART
+  new Chart(document.getElementById('progressChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Persiapan', 'Struktur', 'Arsitektur', 'MEP'],
+      datasets: [
+        { label: 'Rencana', data: [100, 85, 70, 50], backgroundColor: 'rgba(61,127,255,0.4)', borderColor: blue, borderWidth: 1.5, borderRadius: 4 },
+        { label: 'Aktual', data: [100, 78, 60, 38], backgroundColor: 'rgba(34,197,94,0.4)', borderColor: green, borderWidth: 1.5, borderRadius: 4 }
+      ]
+    },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: { labels: { color: '#8b95b0', font: { family: 'DM Sans' } } } }, scales: { x: { grid: { color: gridColor }, ticks: { color: '#5a6480', callback: v => v + '%' }, max: 110 }, y: { grid: { color: gridColor }, ticks: { color: '#5a6480' } } } }
+  });
+
+  // BOBOT DIVISI (page-bobot)
+  new Chart(document.getElementById('bobotDivisiChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','Mei','Jun'],
+      datasets: [{ label: 'Bobot Kumulatif', data: [5, 18, 35, 52, 67, 71], backgroundColor: 'rgba(240,165,0,0.4)', borderColor: accent, borderWidth: 2, borderRadius: 5 }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { grid: { color: gridColor }, ticks: { color: '#5a6480' } }, y: { grid: { color: gridColor }, ticks: { color: '#5a6480', callback: v => v + '%' } } } }
+  });
+
+  // BOBOT PIE
+  new Chart(document.getElementById('bobotPieChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Persiapan 5.8%', 'Struktur 54.1%', 'Arsitektur 33.2%', 'MEP 6.8%'],
+      datasets: [{ data: [5.8, 54.1, 33.2, 6.8], backgroundColor: [accent, blue, '#8b5cf6', green], borderWidth: 2, borderColor: '#1e2640' }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#8b95b0', font: { family: 'DM Sans', size: 11 }, padding: 10 } } } }
+  });
+
+  // KURVA S FULL
+  new Chart(document.getElementById('kurvaSChart'), {
+    type: 'line',
+    data: {
+      labels: ['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12','W13','W14','W15','W16'],
+      datasets: [
+        { label: 'Rencana (%)', data: [3,7,13,20,28,37,47,57,65,72,79,85,90,94,97,100], borderColor: blue, backgroundColor: 'rgba(61,127,255,0.07)', fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 3 },
+        { label: 'Aktual (%)', data: [2,6,11,18,25,33,42,52,58,65,71.2,null,null,null,null,null], borderColor: green, backgroundColor: 'rgba(34,197,94,0.07)', fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 3, borderDash: [5,3] },
+        { label: 'Deviasi (%)', data: [1,1,2,2,3,4,5,5,7,7,8,null,null,null,null,null], borderColor: red, fill: false, tension: 0.4, borderWidth: 1.5, pointRadius: 2, borderDash: [2,4] }
+      ]
+    },
+    options: { responsive: true, plugins: { legend: { labels: { color: '#8b95b0', font: { family: 'DM Sans' }, padding: 16 } } }, scales: { x: { grid: { color: gridColor }, ticks: { color: '#5a6480' } }, y: { grid: { color: gridColor }, ticks: { color: '#5a6480', callback: v => v + '%' }, max: 110 } } }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initCharts();
+  hitungVolume();
+});
+</script>
+</body>
+</html>
